@@ -688,21 +688,78 @@ class AboutScreen extends StatelessWidget {
     appBar: AppBar(title: const Text('A propos')),
     backgroundColor: const Color(0xFFF6F7F9),
     body: Center(
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(mainAxisSize: MainAxisSize.min, children: [
-          const DevFlowLogo(size: 74, showName: true, textColor: Colors.black87),
-          const SizedBox(height: 20),
-          Text(
-            'DevFlow v1.0',
-            style: GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.w700),
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(12),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 420),
+          child: Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: .05),
+                  blurRadius: 8,
+                  offset: const Offset(0, 3),
+                ),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Center(
+                  child: DevFlowLogo(
+                    size: 56,
+                    showName: true,
+                    textColor: Colors.black87,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Center(
+                  child: Text(
+                    'DevFlow v1.0',
+                    style: GoogleFonts.poppins(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.grey.shade900,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  'Application de revision interactive pour apprendre Flutter, Dart et les bases du developpement mobile.',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.nunito(
+                    fontSize: 13,
+                    height: 1.35,
+                    color: Colors.grey.shade700,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Divider(color: Colors.grey.shade200, height: 1),
+                const SizedBox(height: 10),
+                Text(
+                  'Equipe projet',
+                  style: GoogleFonts.poppins(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.grey.shade900,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                ...['CALVERT Wanguy', 'CESAR Yves Angello', 'JOSEPH Scarline']
+                    .map(
+                      (n) => Padding(
+                        padding: const EdgeInsets.only(bottom: 6),
+                        child: _member(n),
+                      ),
+                    ),
+              ],
+            ),
           ),
-          const SizedBox(height: 12),
-          const Text(
-            'Projet realise par : CALVERT Wanguy, CESAR Yves Angello,',
-            textAlign: TextAlign.center,
-          ),
-        ]),
+        ),
       ),
     ),
   );
