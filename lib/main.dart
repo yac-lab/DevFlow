@@ -668,7 +668,7 @@ class AboutScreen extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           const Text(
-            'Projet realise par : CALVERT Wanguy, CESAR Yves Angello, JOSEPH Scarline',
+            'Projet realise par : CALVERT Wanguy, CESAR Yves Angello',
             textAlign: TextAlign.center,
           ),
         ]),
