@@ -7,18 +7,14 @@ import 'models/flashcard.dart';
 import 'services/api_service.dart';
 import 'services/prefs_service.dart';
 
-// ============================================================
-// ================== MAIN =====================================
-// ============================================================
+
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(const DevFlowApp());
 }
 
-// ============================================================
-// ================== APP ======================================
-// ============================================================
+
 
 class DevFlowApp extends StatelessWidget {
   const DevFlowApp({super.key});
@@ -46,16 +42,14 @@ class DevFlowApp extends StatelessWidget {
   );
 }
 
-// ============================================================
-// ================== PROVIDER (État) ==========================
-// ============================================================
+
 
 class FlashcardProvider extends ChangeNotifier {
-  // Services
+  
   ApiService apiService;
   PrefsService prefsService;
   
-  // Données des cartes
+  
   List<Flashcard> cards = [];
   List<String> favoriteIds = [];
   int currentIndex = 0;
@@ -64,10 +58,10 @@ class FlashcardProvider extends ChangeNotifier {
   int cardsViewed = 0;
   int totalProgress = 0;
   
-  // Constructeur
+  
   FlashcardProvider({required this.apiService, required this.prefsService});
   
-  // Propriétés calculées
+  
   Flashcard? get currentCard {
     if (cards.isEmpty) return null;
     return cards[currentIndex];
@@ -86,7 +80,7 @@ class FlashcardProvider extends ChangeNotifier {
     return favoriteIds.contains(id);
   }
   
-  // --- INITIALISATION ---
+  
   
   Future<void> init() async {
     isLoading = true;
@@ -94,17 +88,17 @@ class FlashcardProvider extends ChangeNotifier {
     notifyListeners();
     
     try {
-      // Charger les favoris sauvegardés
+      
       favoriteIds = await prefsService.getFavoriteIds();
       
-      // Charger les statistiques
+      
       cardsViewed = await prefsService.getCardsViewed();
       totalProgress = await prefsService.getTotalProgress();
       
-      // Charger les flashcards depuis l'API ou le cache
+      
       cards = await apiService.fetchFlashcards();
       
-      // Mélanger les cartes aléatoirement
+      
       cards.shuffle(Random());
       currentIndex = 0;
       
@@ -118,7 +112,7 @@ class FlashcardProvider extends ChangeNotifier {
     notifyListeners();
   }
   
-  // --- NAVIGATION ---
+  
   
   void nextCard() {
     if (cards.isEmpty) {
@@ -126,23 +120,29 @@ class FlashcardProvider extends ChangeNotifier {
       return;
     }
     
-    // Vérifier si on est à la dernière carte
+    
     bool isLastCard = currentIndex >= cards.length - 1;
     
     if (isLastCard) {
-      currentIndex = 0;  // Retourner au début
-      cards.shuffle(Random());  // Mélanger à nouveau
+      currentIndex = 0; 
+      cards.shuffle(Random());  
     } else {
       currentIndex = currentIndex + 1;
     }
     
-    // Incrémenter la progression
+    
     _updateProgress();
     
     notifyListeners();
   }
+
+  void previousCard() {
+    if (cards.isEmpty) return;
+    currentIndex = currentIndex <= 0 ? cards.length - 1 : currentIndex - 1;
+    notifyListeners();
+  }
   
-  // Mettre à jour la progression
+  
   void _updateProgress() async {
     await prefsService.incrementCardsViewed();
     cardsViewed = await prefsService.getCardsViewed();
@@ -150,7 +150,7 @@ class FlashcardProvider extends ChangeNotifier {
     notifyListeners();
   }
   
-  // --- FAVORIS ---
+  
   
   Future<void> toggleFavorite(String id) async {
     if (favoriteIds.contains(id)) {
@@ -179,9 +179,7 @@ class FlashcardProvider extends ChangeNotifier {
   }
 }
 
-// ============================================================
-// ================== WIDGETS ==================================
-// ============================================================
+
 
 class DevFlowLogo extends StatelessWidget {
   const DevFlowLogo({
@@ -293,7 +291,7 @@ class FlashcardView extends StatelessWidget {
                     height: 64,
                     width: 64,
                     fit: BoxFit.contain,
-                    errorBuilder: (_, __, ___) => Icon(
+                    errorBuilder: (_, _, _) => Icon(
                       Icons.image_not_supported,
                       size: 40,
                       color: Colors.grey.shade400,
@@ -355,9 +353,7 @@ class ErrorRetryWidget extends StatelessWidget {
   );
 }
 
-// ============================================================
-// ================== SCREENS (Pages) =========================
-// ============================================================
+
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -469,6 +465,22 @@ class HomeScreen extends StatelessWidget {
       ),
       const SizedBox(height: 40),
       Row(children: [
+        GestureDetector(
+          onTap: p.previousCard,
+          child: Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.grey.shade200,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              Icons.arrow_back_rounded,
+              color: Colors.grey.shade700,
+              size: 28,
+            ),
+          ),
+        ),
+        const SizedBox(width: 12),
         GestureDetector(
           onTap: () => p.toggleFavorite(card.id),
           child: Container(
@@ -653,25 +665,95 @@ class DetailScreen extends StatelessWidget {
 class AboutScreen extends StatelessWidget {
   const AboutScreen({super.key});
 
+  Widget _member(String name) => Container(
+    width: double.infinity,
+    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+    decoration: BoxDecoration(
+      color: const Color(0xFFFAFBFC),
+      borderRadius: BorderRadius.circular(8),
+      border: Border.all(color: Colors.grey.shade200),
+    ),
+    child: Text(
+      name,
+      style: GoogleFonts.nunito(
+        fontSize: 13,
+        fontWeight: FontWeight.w700,
+        color: Colors.grey.shade800,
+      ),
+    ),
+  );
+
   @override
   Widget build(BuildContext context) => Scaffold(
     appBar: AppBar(title: const Text('A propos')),
+    backgroundColor: const Color(0xFFF6F7F9),
     body: Center(
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(mainAxisSize: MainAxisSize.min, children: [
-          const DevFlowLogo(size: 74, showName: true, textColor: Colors.black87),
-          const SizedBox(height: 20),
-          Text(
-            'DevFlow v1.0',
-            style: GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.w700),
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(12),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 420),
+          child: Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: .05),
+                  blurRadius: 8,
+                  offset: const Offset(0, 3),
+                ),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Center(
+                  child: DevFlowLogo(size: 56, showName: true, textColor: Colors.black87),
+                ),
+                const SizedBox(height: 10),
+                Center(
+                  child: Text(
+                    'DevFlow v1.0',
+                    style: GoogleFonts.poppins(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.grey.shade900,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  'Application de revision interactive pour apprendre Flutter, Dart et les bases du developpement mobile.',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.nunito(
+                    fontSize: 13,
+                    height: 1.35,
+                    color: Colors.grey.shade700,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Divider(color: Colors.grey.shade200, height: 1),
+                const SizedBox(height: 10),
+                Text(
+                  'Equipe projet',
+                  style: GoogleFonts.poppins(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.grey.shade900,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                ...['CALVERT ', 'CESAR Yves Angello', 'JOSEPH Scarline']
+                    .map((n) => Padding(
+                          padding: const EdgeInsets.only(bottom: 6),
+                          child: _member(n),
+                        )),
+              ],
+            ),
           ),
-          const SizedBox(height: 12),
-          const Text(
-            'Projet realise par : CALVERT Wanguy, CESAR Yves Angello, JOSEPH Scarline',
-            textAlign: TextAlign.center,
-          ),
-        ]),
+        ),
       ),
     ),
   );
