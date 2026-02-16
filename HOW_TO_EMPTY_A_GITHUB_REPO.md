@@ -127,11 +127,8 @@ If you have [GitHub CLI](https://cli.github.com/) installed:
 gh repo clone your-username/your-repo
 cd your-repo
 
-# Remove all files
-rm -rf * .*
-
-# Keep .git directory
-git checkout -- .git 2>/dev/null || true
+# Remove all files except .git
+find . -maxdepth 1 ! -name '.git' ! -name '.' ! -name '..' -exec rm -rf {} +
 
 # Commit and push
 git add -A
