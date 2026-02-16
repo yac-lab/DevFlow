@@ -54,10 +54,7 @@ cd /path/to/your-repo
 
 ```bash
 # Remove all files and directories (except .git)
-rm -rf *
-rm -rf .* 2>/dev/null || true  # Remove hidden files (ignore errors for . and ..)
-
-# Or more precisely, keep only .git
+# This command safely keeps only the .git directory
 find . -maxdepth 1 ! -name '.git' ! -name '.' ! -name '..' -exec rm -rf {} +
 ```
 
