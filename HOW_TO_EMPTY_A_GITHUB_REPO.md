@@ -231,8 +231,10 @@ git checkout main
 
 ```bash
 # Change permissions first
-chmod -R u+w *
-rm -rf *
+chmod -R u+w .
+
+# Then use safe find command
+find . -maxdepth 1 ! -name '.git' ! -name '.' ! -name '..' -exec rm -rf {} +
 ```
 
 ### Issue: Hidden files not deleted
@@ -244,8 +246,8 @@ ls -la
 # Delete specific hidden files
 rm -f .gitignore .env .DS_Store
 
-# Or use find
-find . -name ".*" -not -name ".git" -delete
+# Or use find (only in current directory, preserving .git)
+find . -maxdepth 1 -name ".*" ! -name ".git" ! -name "." ! -name ".." -delete
 ```
 
 ### Issue: Git won't stage deletions
