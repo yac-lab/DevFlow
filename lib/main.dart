@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -257,7 +258,10 @@ class FlashcardView extends StatelessWidget {
     'github': 'assets/images/github.png',
   };
 
-  String? get _logoPath => _categoryLogos[card.category.toLowerCase().trim()];
+  static const _defaultLogo = 'assets/images/devflow_icon.png';
+
+  String get _logoPath =>
+      _categoryLogos[card.category.toLowerCase().trim()] ?? _defaultLogo;
 
   @override
   Widget build(BuildContext context) {
@@ -285,9 +289,21 @@ class FlashcardView extends StatelessWidget {
           const SizedBox(height: 30),
           ClipRRect(
             borderRadius: BorderRadius.circular(12),
-            child: _logoPath != null
-                ? Image.asset(
-                    _logoPath!,
+            child: card.logoUrl.trim().isNotEmpty
+                ? CachedNetworkImage(
+                    imageUrl: card.logoUrl,
+                    height: 64,
+                    width: 64,
+                    fit: BoxFit.contain,
+                    errorWidget: (_, __, ___) => Image.asset(
+                      _logoPath,
+                      height: 64,
+                      width: 64,
+                      fit: BoxFit.contain,
+                    ),
+                  )
+                : Image.asset(
+                    _logoPath,
                     height: 64,
                     width: 64,
                     fit: BoxFit.contain,
@@ -296,11 +312,6 @@ class FlashcardView extends StatelessWidget {
                       size: 40,
                       color: Colors.grey.shade400,
                     ),
-                  )
-                : Icon(
-                    Icons.category,
-                    size: 40,
-                    color: Colors.grey.shade400,
                   ),
           ),
           const SizedBox(height: 20),
