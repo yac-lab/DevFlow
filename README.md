@@ -65,7 +65,18 @@ Teknoloji ak pakè yo itilize:
 - provider pou jesyon eta 
 - shared_preferences pou estokaj lokal 
 - url_launcher pou ouvri lyen ekstèn 
-- google_fonts pou amelyore aparans tipografi 
+- google_fonts pou amelyore aparans tipografi
+
+Nan README a, Mesye a ap jwenn referans sou tout dokiman enpòtan ki gen rapò ak pwojè a.
+Tout dokiman ofisyèl yo (abstract, APK, videyo demonstrasyon, lyen Google Drive, dokiman itilizasyon AI, elatriye) rasanble nan yon fichye .md espesyal ki nan repozitwa a:
+
+-abstract,apk,video,linkdrive.md
+
+-AI-UsageScarlineJ.md
+
+-AI-UsageWanguyC.md
+
+Sa pèmèt tout enfòmasyon enpòtan yo aksesib fasilman nan menm espas la, dirèkteman nan repozitwa GitHub la.
 
 Aplikasyon an entegre yon sistèm cache lokal pou pèmèt itilizasyon menm si 
 koneksyon entènèt la pa disponib. 
